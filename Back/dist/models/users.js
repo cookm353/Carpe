@@ -51,6 +51,10 @@ class User {
             `, [username, hashedPassword, firstName, email, isAdmin]);
         return result.rows[0];
     }
+    /** Authenticate a user's attempt to login
+     *
+     * Returns true if user is successfully authenticated
+     */
     static async authenticate(username, password) {
         const result = await db.query(`SELECT password
             FROM users
@@ -59,9 +63,81 @@ class User {
         const isValid = await bcrypt.compare(password, hashedPassword);
         return isValid;
     }
-    static async find(username) {
+    /** Retrieve user's info based on username
+     *
+     * Returns User object if found
+     * Returns NotFoundError if user can't be found
+     *
+     */
+    static async getByUsername(username) {
+        const result = await db.query(`SELECT
+                username,
+                first_name AS "firstName",
+                email,
+                is_admin AS "isAdmin"
+            FROM users
+            WHERE username = $1`, [username]);
+        const user = result.rows[0];
+        if (!user)
+            throw new NotFoundError(`No user: ${username}`);
+        return new User(user.username, user.email, user.firstName, user.isAdmin);
+    }
+    /** Retrieve user's info based on email
+     *
+     * Returns User object if found
+     * Returns NotFoundError if user can't be found
+     *
+     */
+    static async getByEmail(email) {
+        const result = await db.query(`SELECT
+                    username,
+                    first_name AS "firstName",
+                    email,
+                    is_admin AS "isAdmin"
+                FROM users
+                WHERE email = $1`, [email]);
+        const user = result.rows[0];
+        if (!user)
+            throw new NotFoundError(`No user with email: ${email}`);
+        return new User(user.username, user.email, user.firstName, user.isAdmin);
     }
     static async findAll() {
+        const result = await db.query(`SELECT
+                username,
+                first_name AS "firstName",
+                email,
+                is_admin AS "isAdmin"
+            FROM users`);
+        const users = result.rows.map(row => {
+            return new User(row.username, row.email, row.firstName, row.isAdmin);
+        });
+        return users;
+    }
+    /** Update user info
+     *
+     *
+     */
+    static async update() {
+    }
+    /** Deletes specified user
+     *
+     * Returns undefined
+     *
+     * Throws NotFoundError if user doesn't exist
+     */
+    static async delete(username) {
+        const result = await db.query(`DELETE
+            FROM users
+            WHERE username = $1
+            RETURNING username`, [username]);
+        const user = result.rows[0];
+        if (!user)
+            throw new NotFoundError(`No user: ${username}`);
+    }
+    /** Retrieve entries made by user
+     *
+     */
+    static async getEntries(username) {
     }
 }
 module.exports = User;

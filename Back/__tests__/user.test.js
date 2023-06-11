@@ -15,6 +15,7 @@ beforeEach(async () => {
     }))
 })
 
+
 describe("Register", () => {
     it("works", async () => {
         const bob = await(User.register({
@@ -57,6 +58,7 @@ describe("Register", () => {
     })
 })
 
+
 describe("Login", () => {
     it("works", async () => {
         let isValid = await User.authenticate("Alice", "test123")
@@ -64,6 +66,84 @@ describe("Login", () => {
 
         isValid = await User.authenticate("Alice", "asdf")
         expect(isValid).toBeFalsy()
+    })
+})
+
+
+describe("GetByUsername", () => {
+    it("works", async () => {
+        const user = await User.getByUsername("Alice")
+        expect(user.username).toEqual("Alice")
+        expect(user.isAdmin).toBeTruthy()
+    })
+
+    it("throws error if username not found", async () => {
+        try {
+            const user = await User.getByUsername("Bob")
+        } catch (err) {
+            expect(err.message).toBe("No user: Bob")
+        }
+    })
+})
+
+
+describe("GetByEmail", () => {
+    it("works", async () => {
+        const user = await User.getByEmail("alice@test.com")
+        expect(user.username).toEqual("Alice")
+        expect(user.isAdmin).toBeTruthy()
+    })
+
+    it("throws error if username not found", async () => {
+        try {
+            const user = await User.getByEmail("alice@test.org")
+        } catch (err) {
+            expect(err.message).toBe("No user with email: alice@test.org")
+        }
+    })
+})
+
+describe("FindAll", () => {
+    it("works", async () => {
+        const bob = await(User.register({
+            username: "Bob",
+            password: "test123",
+            email: "bob@test.com",
+            firstName: "Bob",
+            isAdmin: false
+        }))
+
+        const users = await User.findAll()
+
+        expect(users[0].username).toEqual("Alice")
+        expect(users[1].username).toEqual("Bob")
+    })
+
+})
+
+describe("Update", () => {
+
+})
+
+describe("Delete", () => {
+    it("works", async () => {
+        let result = await User.delete("Alice")
+
+        try {
+            result = await User.getByUsername("Alice")    
+        } catch (err) {
+            expect(err.message).toBe("No user: Alice")
+        }
+        
+
+    })
+
+    it("throws error if user doesn't exist", async () => {
+        try {
+            const result = await User.delete("Bob")
+        } catch (err) {
+            expect(err.message).toEqual("No user: Bob")
+        }
     })
 })
 
