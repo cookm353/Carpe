@@ -12,23 +12,20 @@
     "properties": {
         "username": {
             "type": "string",
-            "default": "",
-            "title": "The username Schema"
+            "minLength": 5,
+            "maxLength": 20
         },
         "password": {
             "type": "string",
-            "default": "",
-            "title": "The password Schema"
+            "minLength": 7,
+            "maxLength": 20
         },
         "firstName": {
-            "type": "string",
-            "default": "",
-            "title": "The firstName Schema"
+            "type": "string"
         },
         "email": {
             "type": "string",
-            "default": "",
-            "title": "The email Schema"
+            "format": "email"
         }
     },
     "examples": [{
