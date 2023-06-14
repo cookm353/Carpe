@@ -3,6 +3,9 @@ const { BadRequestError, NotFoundError } = require ('../expressError')
 
 class Entry {
     entryDate
+    stressLevel
+    sleepQuality
+    activityLevel
 
     constructor(
         entryDate, stressLevel, sleepQuality, activityLevel
@@ -29,6 +32,8 @@ class Entry {
             throw new BadRequestError(`Duplicate date: ${entryDate}`)
 
         
+        
+
     }
 
     /** Retrieves an entry
@@ -54,3 +59,5 @@ class Entry {
 
     }
 }
+
+module.exports = Entry

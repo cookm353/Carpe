@@ -2,6 +2,9 @@ const db = require('../db');
 const { BadRequestError, NotFoundError } = require('../expressError');
 class Entry {
     entryDate;
+    stressLevel;
+    sleepQuality;
+    activityLevel;
     constructor(entryDate, stressLevel, sleepQuality, activityLevel) {
         this.entryDate = entryDate;
     }
@@ -30,3 +33,4 @@ class Entry {
     static async delete(userId, entryDate) {
     }
 }
+module.exports = Entry;
