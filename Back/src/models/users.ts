@@ -78,16 +78,26 @@ class User {
      */
     static async authenticate(username, password) {
         const result = await db.query(
-            `SELECT password
+            `SELECT 
+                username, 
+                first_name AS "firstName", 
+                password, 
+                is_admin AS "isAdmin",
+                email
             FROM users
             WHERE username = $1`,
             [username]
         )
+        
+        const u = result.rows[0]
 
-        const hashedPassword = result.rows[0].password
-        const isValid = await bcrypt.compare(password, hashedPassword)
+        if ( u ) {
+            const isValid = await bcrypt.compare(password, u.password)
 
-        return isValid
+            if (isValid) return new User(u.username, u.firstName, u.email, u.isAdmin)
+        }
+
+        throw new UnauthorizedError("Invalid username/password")
     }
 
     /** Retrieve user's info based on username
