@@ -1,11 +1,11 @@
 const express = require('express')
 const cors = require("cors")
 
-const { NotFoundError} = require("./expressError")
+const { NotFoundError } = require("./expressError")
 
 const authRoutes = require("./routes/auth")
+const userRoutes = require("./routes/user")
 const entryRoutes = require("./routes/entry")
-const userRoutes = require("./routes/users")
 
 const morgan = require("morgan")
 
@@ -18,7 +18,7 @@ app.use(morgan('tiny'))
 
 app.use("/auth", authRoutes)
 // app.use("/entry", entryRoutes)
-// app.use("/user", userRoutes)
+app.use("/user", userRoutes)
 
 // Handle 404 errors
 app.use((req, resp, next) => {

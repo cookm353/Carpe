@@ -71,7 +71,7 @@ function ensureIsAdminOrCorrectUser(req, res, next) {
     }
 }
 
-mdoule.exports = {
+module.exports = {
     authenticateJWT,
     ensureLoggedIn,
     ensureIsAdmin,

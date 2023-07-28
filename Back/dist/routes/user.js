@@ -1,4 +1,6 @@
 /* User class */
+const jsonschema = require("jsonschema");
+const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const db = require("../db");
@@ -13,8 +15,8 @@ const router = express.Router();
  *
  * Authorization required: admin
  */
-router.post("/", ensureIsAdmin, async (req, res, next) => {
-});
+// router.post("/", ensureIsAdmin, async (req, res, next) => {
+// })
 /** GET /user/ => { users: [ user1, user2, ... ] }
  *
  * Returns list of all users
@@ -23,9 +25,13 @@ router.post("/", ensureIsAdmin, async (req, res, next) => {
  */
 // router.get("/", ensureLoggedIn, async (req, res, next) => {
 router.get("/", async (req, res, next) => {
+    console.log("foo");
     try {
+        const users = await User.findAll();
+        return res.json({ users });
     }
     catch (err) {
+        return next(err);
     }
 });
 /** GET /user/[username] => { user }
@@ -34,12 +40,11 @@ router.get("/", async (req, res, next) => {
  *
  * Auth required: admin or correct user
  */
-router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-    try {
-    }
-    catch (err) {
-    }
-});
+// router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+//     try {
+//     } catch (err) {
+//     }
+// })
 /** PATCH /user/[username] { user } => { user }
  *
  * Data can include:
@@ -49,19 +54,18 @@ router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
  *
  * Auth required: admin or correct user
 */
-router.patch("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-    try {
-    }
-    catch (err) {
-    }
-});
+// router.patch("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+//     try {
+//     } catch (err) {
+//     }
+// })
 /** DELETE /user/[username] => { deleted: username }
  *
  * Auth required: admin or correct user
 */
-router.delete("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-    try {
-    }
-    catch (err) {
-    }
-});
+// router.delete("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+//     try {
+//     } catch (err) {
+//     }
+// })
+module.exports = router;
