@@ -10,14 +10,70 @@ const { UnauthorizedError} = require ('../expressError')
  * Not providing a token or having an invalid token isn't an error
 */
 
-function authenticateJWT(req, resp, next) {
+function authenticateJWT(req, res, next) {
     try{
         const authHeader = req.headers && req.headers.authorization
 
         if (authHeader) {
-            const token = authHeader.repl
+            const token = authHeader.replace(/^[Bb]earer /, "").trim()
+            res.locals.user = jwt.verify(token, SECRET_KEY)
         }
+        return next()
     } catch (err) {
         return next()
     }
+}
+
+/** Middleware used when a user needs to be logged in
+ * 
+ * If not, raises Unauthorized
+ */
+
+function ensureLoggedIn(req, res, next) {
+    try {
+        if (!res.locals.user) throw new UnauthorizedError()
+        return next()
+    } catch (err) {
+        return next(err)
+    }
+}
+
+/** Middleware to check if user is an admin
+ * 
+ * If not, raises Unauthorized
+ */
+
+function ensureIsAdmin(req, res, next) {
+    try {
+        const authHeader = req.headers && req.headers.authorization
+
+        if (authHeader) {
+            const token = authHeader.replace(/^[Bb]earer /, "").trim()
+            const user = jwt.verify(token, SECRET_KEY)
+
+            if (!user.isAdmin) throw new UnauthorizedError()
+
+            return next()
+        }
+
+        throw new UnauthorizedError
+    } catch (err) {
+        return next(err)
+    }
+}
+
+function ensureIsAdminOrCorrectUser(req, res, next) {
+    try {
+        if (!res.locals.user) throw new UnauthorizedError()
+        return next()
+    } catch (err) {
+        return next(err)
+    }
+}
+
+mdoule.exports = {
+    authenticateJWT,
+    ensureLoggedIn,
+    ensureIsAdmin,
+    ensureIsAdminOrCorrectUser
 }

@@ -28,7 +28,8 @@ router.post("/", ensureIsAdmin, async (req, res, next) => {
  * Authorization required: login
  */
 
-router.get("/", ensureLoggedIn, async (req, res, next) => {
+// router.get("/", ensureLoggedIn, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
     try {
         
     } catch (err) {
