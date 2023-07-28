@@ -41,10 +41,15 @@ router.get("/", async (req, res, next) => {
  * Auth required: admin or correct user
  */
 // router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-//     try {
-//     } catch (err) {
-//     }
-// })
+router.get("/:username", async (req, res, next) => {
+    try {
+        const user = await User.getByUsername(req.params.username);
+        return res.json({ user });
+    }
+    catch (err) {
+        return next(err);
+    }
+});
 /** PATCH /user/[username] { user } => { user }
  *
  * Data can include:
