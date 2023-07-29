@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "default": {},
+    "title": "Root Schema",
+
+    "properties": {
+        "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+        },
+        "firstName": {
+            "type": "string",
+            "description": "User's first name"
+        },
+        "password": {
+            "type": "string",
+            "minLength": 7,
+            "description": "User's password",
+            "examples": [
+                "test123"
+            ]
+        }
+    },
+    "examples": [{
+        "email": "Bob@test.com",
+        "firstName": "Bob",
+        "password": "test123"
+    }]
+}
