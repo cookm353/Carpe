@@ -3,6 +3,7 @@ process.env.NODE_ENV = "test"
 const request = require("supertest")
 const db = require("../dist/db")
 const User = require("../dist/models/users")
+const { UnauthorizedError } = require("../dist/expressError")
 
 
 beforeEach(async () => {
@@ -64,8 +65,11 @@ describe("Login", () => {
         let isValid = await User.authenticate("Alice", "test123")
         expect(isValid).toBeTruthy()
 
-        isValid = await User.authenticate("Alice", "asdf")
-        expect(isValid).toBeFalsy()
+        try {
+            isValid = await User.authenticate("Alice", "asdf")
+        } catch (err) {
+            expect(err.message).toBe("Invalid username/password")
+        }
     })
 })
 
