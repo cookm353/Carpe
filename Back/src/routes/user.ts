@@ -1,4 +1,4 @@
-/* User class */
+/* User routes */
 
 const jsonschema = require("jsonschema")
 const express = require("express")
@@ -8,9 +8,12 @@ const bcrypt = require("bcrypt")
 
 const db = require("../db")
 const { ensureLoggedIn, ensureIsAdmin, ensureIsAdminOrCorrectUser} = require("../middleware/auth")
-const ExpressError = require("../expressError")
+const { ExpressError, BadRequestError } = require("../expressError")
 const { BCRYPT_WORK_FACTOR } = require("../config")
 const User = require("../models/users")
+const { createToken } = require('../helpers/tokens')
+const userNewSchema = require('../../schemas/userNewSchema.json')
+// const userUpdateSchema;
 
 const router = express.Router()
 
@@ -22,8 +25,24 @@ const router = express.Router()
  */
 
 // router.post("/", ensureIsAdmin, async (req, res, next) => {
+router.post("/", async (req, res, next) => {
+    try {
+        // const { username, password, email, firstName, isAdmin = false } = req.body
+        // console.log(isAdmin)
+        const validator = jsonschema.validate(req.body, userNewSchema)
+        if ( !validator.valid ) {
+            const errs = validator.errors.map(e => e.stack)
+            throw new BadRequestError(errs)
+        }
 
-// })
+        const user = await User.register(req.body)
+        const token = createToken(user)
+        
+        return res.status(201).json({ user, token })
+    } catch (err) {
+        return next(err)
+    }
+})
 
 /** GET /user/ => { users: [ user1, user2, ... ] }
  * 
@@ -34,7 +53,6 @@ const router = express.Router()
 
 // router.get("/", ensureLoggedIn, async (req, res, next) => {
 router.get("/", async (req, res, next) => {
-    console.log("foo")
     try {
         const users = await User.findAll()
         return res.json({users})
@@ -71,24 +89,38 @@ router.get("/:username", async (req, res, next) => {
 */
 
 // router.patch("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-//     try {
-        
-//     } catch (err) {
-        
-//     }
-// })
+router.patch("/:username", async (req, res, next) => {
+    try {
+        const username = req.params.username
+        let updatedUserInfo = {username}
+
+        if (req.body.firstName) {
+            updatedUserInfo.firstName = req.body.firstName
+        }
+
+        const result = await User.update(updatedUserInfo)
+        console.log(username)
+        return res.json({username})
+    } catch (err) {
+        return next(err)
+    }
+})
 
 /** DELETE /user/[username] => { deleted: username } 
  * 
  * Auth required: admin or correct user
+ * 
+ * Returns { deleted: username }
 */
 
 // router.delete("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-//     try {
-        
-//     } catch (err) {
-        
-//     }
-// })
+router.delete("/:username", async (req, res, next) => {
+    try {
+        await User.delete(req.params.username)
+        return res.json({ deleted: req.params.username })
+    } catch (err) {
+        return next(err)
+    }
+})
 
 module.exports = router
