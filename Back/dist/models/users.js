@@ -1,6 +1,6 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const { BadRequestError, NotFoundError } = require("../expressError");
+const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 /** Class to handle all user-related actions */
 class User {
@@ -16,11 +16,10 @@ class User {
     }
     /** Register a new user
      *
-     * Returns User object
-     *
      * Throws BadRequestError if username taken or email already used
       */
-    static async register({ username, password, email, firstName, isAdmin }) {
+    static async register({ username, password, email, firstName, isAdmin = false }) {
+        // console.log(isAdmin)
         const duplicateUsernameCheck = await db.query(`SELECT username
             FROM users
             WHERE username = $1`, [username]);
@@ -34,6 +33,7 @@ class User {
             throw new BadRequestError(`Account already exists with email address ${email}`);
         }
         const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+        console.log(hashedPassword);
         const result = await db.query(`INSERT INTO users (
                 username,
                 password,
@@ -99,17 +99,20 @@ class User {
      */
     static async getByEmail(email) {
         const result = await db.query(`SELECT
-                    username,
-                    first_name AS "firstName",
-                    email,
-                    is_admin AS "isAdmin"
-                FROM users
-                WHERE email = $1`, [email]);
+                username,
+                first_name AS "firstName",
+                email,
+                is_admin AS "isAdmin"
+            FROM users
+            WHERE email = $1`, [email]);
         const user = result.rows[0];
         if (!user)
             throw new NotFoundError(`No user with email: ${email}`);
         return new User(user.username, user.email, user.firstName, user.isAdmin);
     }
+    /**
+     * Retrieve details for all users     *
+     */
     static async findAll() {
         const result = await db.query(`SELECT
                 username,
@@ -124,9 +127,20 @@ class User {
     }
     /** Update user info
      *
+     * Regular users can update first name, email, or password
+     * Admins can set other users to admin
      *
+     * Throws NotFoundError if user doesn't exist
+     * Returns updated user
      */
-    static async update() {
+    static async update(userInfo) {
+        let result = await db.query(`SELECT *
+            FROM users
+            WHERE username = $1`, [userInfo.username]);
+        const user = result.rows[0];
+        console.log(userInfo);
+        if (!user)
+            throw new NotFoundError(`No user: ${userInfo.username}`);
     }
     /** Deletes specified user
      *
