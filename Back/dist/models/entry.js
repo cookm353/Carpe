@@ -1,13 +1,6 @@
 const db = require('../db');
 const { BadRequestError, NotFoundError } = require('../expressError');
 class Entry {
-    entryDate;
-    stressLevel;
-    sleepQuality;
-    activityLevel;
-    constructor(entryDate, stressLevel, sleepQuality, activityLevel) {
-        this.entryDate = entryDate;
-    }
     /** Create a new entry from data, update DB, and return entry
      *
      * Throws BadRequestError if entry for that date already exists
@@ -21,9 +14,25 @@ class Entry {
     }
     /** Retrieves an entry
      *
-     * Throws NotFoundError if entry doesn't exist
+     * Throws NotFoundError if or user entry doesn't exist
      */
-    static async get(userId, entryDate) {
+    static async get(username, entryDate) {
+        const userResult = await db.query(`SELECT user_id
+            FROM users
+            WHERE username = $1
+            `, [username]);
+        const userId = userResult;
+        if (!userId)
+            throw new NotFoundError(`No user: ${username}`);
+        const result = await db.query(`SELECT *
+            FROM entry
+            WHERE user_id = $1
+                AND date = $2
+            `, [userId, entryDate]);
+        const entry = result.rows[0];
+        if (!entry)
+            throw new NotFoundError(`No entry for ${entryDate}`);
+        return result;
     }
     /** Retrieves all entries a user's made */
     static async getAll(userId) {
