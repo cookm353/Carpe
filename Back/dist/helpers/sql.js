@@ -22,20 +22,18 @@ const toSnakeCase = (word) => {
  *
  *
  */
-const sqlForPartialUpdate = (dataToUpdate, jsToSql) => {
+const sqlForPartialUpdate = (dataToUpdate) => {
     const keys = Object.keys(dataToUpdate);
     if (keys.length === 0)
         throw new BadRequestError("No data");
-    // {firstName: "Alice", age: 29} => ['"first_name"]    
+    // {firstName: "Alice", age: 29} => ['"first_name"=%1`, `"age"=$2`]    
     const cols = keys.map((colName, idx) => {
         colName = toSnakeCase(colName);
-        return `"${jsToSql[colName] || colName}"=$${idx + 1}`;
+        return `"${colName || colName}"=$${idx + 1}`;
     });
     return {
         setCols: cols.join(', '),
         values: Object.values(dataToUpdate)
     };
 };
-const result = sqlForPartialUpdate({ firstName: "Alice", age: 2 }, ['first_name', 'age']);
-console.log(result);
 module.exports = { sqlForPartialUpdate };
