@@ -166,7 +166,7 @@ class User {
     static async delete(username) {
         let result = await db.query(`SELECT *
             FROM users
-            WHERE username = $1`);
+            WHERE username = $1`, [username]);
         const user = result.rows[0];
         if (!user)
             throw new NotFoundError(`No user: ${username}`);

@@ -224,7 +224,8 @@ class User {
         let result = await db.query(
             `SELECT *
             FROM users
-            WHERE username = $1`
+            WHERE username = $1`,
+            [username]
         )
         
         const user = result.rows[0]
