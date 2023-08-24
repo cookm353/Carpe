@@ -92,15 +92,21 @@ router.get("/:username", async (req, res, next) => {
 router.patch("/:username", async (req, res, next) => {
     try {
         const username = req.params.username
-        let updatedUserInfo = {username}
+        let updatedUserInfo = {}
 
         if (req.body.firstName) {
             updatedUserInfo.firstName = req.body.firstName
         }
+        if (req.body.password) {
+            updatedUserInfo.password = req.body.password
+        }
+        if  (req.body.email) {
+            updatedUserInfo.email = req.body.email
+        }
 
-        const result = await User.update(updatedUserInfo)
-        console.log(username)
-        return res.json({username})
+        const result = await User.update(updatedUserInfo, username)
+        console.log(result)
+        return res.json(result)
     } catch (err) {
         return next(err)
     }

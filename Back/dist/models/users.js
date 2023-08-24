@@ -2,6 +2,7 @@ const db = require("../db");
 const bcrypt = require("bcrypt");
 const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError");
 const { BCRYPT_WORK_FACTOR } = require("../config");
+const { sqlForPartialUpdate } = require('../helpers/sql');
 /** Class to handle all user-related actions */
 class User {
     username;
@@ -133,14 +134,28 @@ class User {
      * Throws NotFoundError if user doesn't exist
      * Returns updated user
      */
-    static async update(userInfo) {
+    static async update(userInfo, username) {
+        if (userInfo.password) {
+            userInfo.password = await bcrypt.hash(userInfo.password, BCRYPT_WORK_FACTOR);
+        }
         let result = await db.query(`SELECT *
             FROM users
-            WHERE username = $1`, [userInfo.username]);
+            WHERE username = $1`, [username]);
         const user = result.rows[0];
-        console.log(userInfo);
         if (!user)
-            throw new NotFoundError(`No user: ${userInfo.username}`);
+            throw new NotFoundError(`No user: ${username}`);
+        const { setCols, values } = sqlForPartialUpdate(userInfo);
+        const usernameIdx = "$" + (values.length + 1);
+        const querySql = `UPDATE users
+            SET ${setCols}
+            WHERE username = ${usernameIdx}
+            RETURNING username,
+                first_name AS "firstName",
+                email,
+                is_admin AS "isAdmin"
+        `;
+        result = await db.query(querySql, [...values, username]);
+        return (result.rows[0]);
     }
     /** Deletes specified user
      *
@@ -149,13 +164,16 @@ class User {
      * Throws NotFoundError if user doesn't exist
      */
     static async delete(username) {
-        const result = await db.query(`DELETE
+        let result = await db.query(`SELECT *
             FROM users
-            WHERE username = $1
-            RETURNING username`, [username]);
+            WHERE username = $1`);
         const user = result.rows[0];
         if (!user)
             throw new NotFoundError(`No user: ${username}`);
+        result = await db.query(`DELETE
+            FROM users
+            WHERE username = $1
+            RETURNING username`, [username]);
     }
     /** Retrieve entries made by user
      *
