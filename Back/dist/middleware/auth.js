@@ -57,6 +57,16 @@ function ensureIsAdmin(req, res, next) {
 }
 function ensureIsAdminOrCorrectUser(req, res, next) {
     try {
+        const authHeader = req.headers && req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.replace(/^[Bb]earer /, "").trim();
+            const user = jwt.verify(token, SECRET_KEY);
+            if (user.username !== req.params.username && !user.isAdmin)
+                throw new UnauthorizedError();
+        }
+        else {
+            throw new UnauthorizedError();
+        }
         if (!res.locals.user)
             throw new UnauthorizedError();
         return next();
