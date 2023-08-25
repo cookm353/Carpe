@@ -10,6 +10,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 const User = require("../models/users");
 const { createToken } = require('../helpers/tokens');
 const userNewSchema = require('../../schemas/userNewSchema.json');
+const userUpdateSchema = require("../../schemas/userUpdateSchema.json");
 // const userUpdateSchema;
 const router = express.Router();
 /** POST /user/
@@ -80,19 +81,17 @@ router.get("/:username", async (req, res, next) => {
 // router.patch("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
 router.patch("/:username", async (req, res, next) => {
     try {
+        const validator = jsonschema.validate(req.body, userUpdateSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
         const username = req.params.username;
         let updatedUserInfo = {};
-        if (req.body.firstName) {
-            updatedUserInfo.firstName = req.body.firstName;
-        }
-        if (req.body.password) {
-            updatedUserInfo.password = req.body.password;
-        }
-        if (req.body.email) {
-            updatedUserInfo.email = req.body.email;
+        for (let key in req.body) {
+            updatedUserInfo[key] = req.body[key];
         }
         const result = await User.update(updatedUserInfo, username);
-        console.log(result);
         return res.json(result);
     }
     catch (err) {

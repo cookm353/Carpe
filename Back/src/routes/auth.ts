@@ -25,12 +25,11 @@ router.post("/token", async (req, res, next) => {
             const errs = validator.errors.map(e => e.stack)
             throw new BadRequestError(errs)
         }
-
+        
         const { username, password } = req.body
         const user = await User.authenticate(username, password)
         const token = createToken(user)
-
-        console.log(req.headers)
+        console.log("JWT token sent")
 
         return res.json({ token })
     } catch (err) {
@@ -48,17 +47,19 @@ router.post("/token", async (req, res, next) => {
 */
 
 router.post("/register", async (req, res, next) => {
-    console.log("foo")
+    
     try {
         const validator = jsonschema.validate(req.body, userRegisterSchema)
-
+        
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack)
             throw new BadRequestError(errs)
         }
-
+        
         const newUser = await User.register({ ...req.body, isAdmin: false })
         const token = createToken(newUser)
+        
+        console.log("New user registered")
         return res.status(201).json({ token })
 
     } catch (err) {
