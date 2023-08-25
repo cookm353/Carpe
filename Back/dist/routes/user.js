@@ -11,7 +11,6 @@ const User = require("../models/users");
 const { createToken } = require('../helpers/tokens');
 const userNewSchema = require('../../schemas/userNewSchema.json');
 const userUpdateSchema = require("../../schemas/userUpdateSchema.json");
-// const userUpdateSchema;
 const router = express.Router();
 /** POST /user/
  *
@@ -19,11 +18,8 @@ const router = express.Router();
  *
  * Authorization required: admin
  */
-// router.post("/", ensureIsAdmin, async (req, res, next) => {
-router.post("/", async (req, res, next) => {
+router.post("/", ensureIsAdmin, async (req, res, next) => {
     try {
-        // const { username, password, email, firstName, isAdmin = false } = req.body
-        // console.log(isAdmin)
         const validator = jsonschema.validate(req.body, userNewSchema);
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
@@ -43,7 +39,7 @@ router.post("/", async (req, res, next) => {
  *
  * Authorization required: login
  */
-router.get("/", ensureLoggedIn, async (req, res, next) => {
+router.get("/", ensureIsAdmin, async (req, res, next) => {
     try {
         const users = await User.findAll();
         return res.json({ users });
@@ -59,7 +55,6 @@ router.get("/", ensureLoggedIn, async (req, res, next) => {
  * Auth required: admin or correct user
  */
 router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-    // router.get("/:username", async (req, res, next) => {
     try {
         const user = await User.getByUsername(req.params.username);
         return res.json({ user });
@@ -77,8 +72,7 @@ router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
  *
  * Auth required: admin or correct user
 */
-// router.patch("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-router.patch("/:username", async (req, res, next) => {
+router.patch("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
     try {
         const validator = jsonschema.validate(req.body, userUpdateSchema);
         if (!validator.valid) {
@@ -103,8 +97,7 @@ router.patch("/:username", async (req, res, next) => {
  *
  * Returns { deleted: username }
 */
-// router.delete("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-router.delete("/:username", async (req, res, next) => {
+router.delete("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
     try {
         await User.delete(req.params.username);
         return res.json({ deleted: req.params.username });
