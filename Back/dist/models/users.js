@@ -35,7 +35,6 @@ class User {
             throw new BadRequestError(`Account already exists with email address ${email}`);
         }
         const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
-        console.log(hashedPassword);
         const result = await db.query(`INSERT INTO users (
                 username,
                 password,

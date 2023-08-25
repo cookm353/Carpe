@@ -50,7 +50,6 @@ class User {
         }
         
         const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR)
-        console.log(hashedPassword)
 
         const result = await db.query(
             `INSERT INTO users (
@@ -237,7 +236,7 @@ class User {
             FROM users
             WHERE username = $1
             RETURNING username`,
-            [username]
+            [username] 
         )
 
     }
