@@ -43,8 +43,7 @@ router.post("/", async (req, res, next) => {
  *
  * Authorization required: login
  */
-// router.get("/", ensureLoggedIn, async (req, res, next) => {
-router.get("/", async (req, res, next) => {
+router.get("/", ensureLoggedIn, async (req, res, next) => {
     try {
         const users = await User.findAll();
         return res.json({ users });
@@ -59,8 +58,8 @@ router.get("/", async (req, res, next) => {
  *
  * Auth required: admin or correct user
  */
-// router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
-router.get("/:username", async (req, res, next) => {
+router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+    // router.get("/:username", async (req, res, next) => {
     try {
         const user = await User.getByUsername(req.params.username);
         return res.json({ user });
