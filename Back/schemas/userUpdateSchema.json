@@ -24,6 +24,7 @@
             ]
         }
     },
+    "additionalProperties": false,
     "examples": [{
         "email": "Bob@test.com",
         "firstName": "Bob",
