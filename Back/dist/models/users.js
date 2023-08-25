@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 const { sqlForPartialUpdate } = require('../helpers/sql');
+// const { userUpdateSchema } = require("../../schemas/userUpdateSchema.json")
 /** Class to handle all user-related actions */
 class User {
     username;
