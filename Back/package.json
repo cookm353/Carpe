@@ -10,5 +10,8 @@
     "nodemon": "^2.0.22",
     "pg": "^8.11.0",
     "supertest": "^6.3.3"
+  },
+  "scripts": {
+    "test": "jest --verbose"
   }
 }
