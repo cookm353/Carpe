@@ -88,7 +88,7 @@ describe("GET /user/:username", () => {
             .get("/user/tom")
             .set('authorization', `Bearer ${adminJWT}`)
 
-        expect(resp).toEqual("")
+        expect(resp.body.user.firstName).toEqual("Tom")
         expect(resp.statusCode).toBe(200)
     })
 })

@@ -19,15 +19,15 @@ async function commonBeforeAll() {
             firstName: "Chuck"
         }
     )
-    // await User.register(
-    //     {
-    //         username: "tom", 
-    //         password: "test123", 
-    //         email: "tom@test.com", 
-    //         firstName: "Tom", 
-    //         isAdmin: true
-    //     }
-    // )
+    await User.register(
+        {
+            username: "tom", 
+            password: "test123", 
+            email: "tom@test.com", 
+            firstName: "Tom", 
+            isAdmin: true
+        }
+    )
 }
 
 async function commonBeforeEach() {
