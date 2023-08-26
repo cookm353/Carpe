@@ -12,6 +12,8 @@
     "supertest": "^6.3.3"
   },
   "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon dist/server.js",
     "test": "jest --verbose"
   }
 }
