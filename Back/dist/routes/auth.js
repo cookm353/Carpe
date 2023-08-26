@@ -23,7 +23,6 @@ router.post("/token", async (req, res, next) => {
         const { username, password } = req.body;
         const user = await User.authenticate(username, password);
         const token = createToken(user);
-        console.log("JWT token sent");
         return res.json({ token });
     }
     catch (err) {
