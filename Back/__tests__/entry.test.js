@@ -32,7 +32,7 @@ beforeAll(async () => {
 describe("Create", () => {
     it("throws error if user not found", async () => {
         const alice = await User.getByUsername("alice")
-        expect(alice).toEqual("foo")
+        expect(alice.username).toEqual("alice")
         // expect(alice.username).toBe("alice")
         // const result = await Entry.create(testEntry)
         // const result = await db.query(`SELECT user_id FROM users WHERE username = "alice";`)

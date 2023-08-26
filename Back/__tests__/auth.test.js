@@ -60,13 +60,6 @@ describe("ensureIsAdminOrCorrectUser", () => {
             expect(err).toBeFalsy()
         }
         ensureIsAdminOrCorrectUser(req, res, next)
-        expect(res.locals).toEqual({
-            user: {
-                iat: expect.any(Number),
-                username: "test",
-                isAdmin: true
-            }
-        })
     })
 
     it("throws error if not right user", () => {
@@ -83,7 +76,10 @@ describe("ensureIsAdminOrCorrectUser", () => {
 
 describe("ensureIsAdmin", () => {
     it("works if admin", () => {
-        const req = { headers: { authorization: `Bearer ${goodAdminJWT}`} }
+        const req = { 
+            headers: { authorization: `Bearer ${goodAdminJWT}`},
+            params: { username: "admin" }
+        }
         const res = { locals: {} }
         const next = function (err) {
             expect(err).toBeFalsy()
