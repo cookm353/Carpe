@@ -6,6 +6,12 @@ class Entry {
      * Throws BadRequestError if entry for that date already exists
      */
     static async create({ entryDate, stressLevel, sleepQuality, activityLevel, numDrinks, numAuras, numSeizures, comments, userId }) {
+        const userCheck = await db.query(`SELECT *
+            FROM users
+            WHERE user_id = $1`, [userId]);
+        let result = userCheck.rows[0];
+        if (!result)
+            throw new NotFoundError("User not found");
         const duplicateCheck = await db.query(`SELECT entryId
             FROM entries
             WHERE entryDate = $1`, [entryDate]);

@@ -10,6 +10,18 @@ class Entry {
             { entryDate, stressLevel, sleepQuality, activityLevel,
             numDrinks, numAuras, numSeizures, comments, userId } 
         ) {
+
+        const userCheck = await db.query(
+            `SELECT *
+            FROM users
+            WHERE user_id = $1`,
+            [userId]
+        )
+        
+        let result = userCheck.rows[0]
+
+        if (!result) throw new NotFoundError("User not found")
+
         const duplicateCheck = await db.query(
             `SELECT entryId
             FROM entries
@@ -18,10 +30,7 @@ class Entry {
         )
 
         if (duplicateCheck.rows[0])
-            throw new BadRequestError(`Duplicate date: ${entryDate}`)
-
-        
-        
+            throw new BadRequestError(`Duplicate date: ${entryDate}`)       
 
     }
 
