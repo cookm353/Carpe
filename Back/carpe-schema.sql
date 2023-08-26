@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR UNIQUE,
+    username VARCHAR UNIQUE NOT NULL,
     password VARCHAR NOT NULL,
     first_name VARCHAR NOT NULL,
     email VARCHAR NOT NULL UNIQUE,
@@ -18,7 +18,7 @@ CREATE TABLE users (
 
 CREATE TABLE entry (
     entry_id SERIAL PRIMARY KEY,
-    entry_date DATE NOT NULL,
+    entry_date DATE NOT NULL DEFAULT CURRENT_DATE,
     took_am_meds BOOLEAN NOT NULL,
     took_pm_meds BOOLEAN NOT NULL,
     stress_level DECIMAL,
