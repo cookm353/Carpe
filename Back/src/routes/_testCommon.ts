@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt")
 const db = require('../db')
 const User = require("../models/users")
 const { BCRYPT_WORK_FACTOR } = require("../config")
+const { createToken } = require("../helpers/tokens")
 
 async function commonBeforeAll() {
     // await db.query('DELETE FROM entries')
@@ -12,13 +13,21 @@ async function commonBeforeAll() {
 
     await User.register(
         {
-            username: "tom", 
-            password: "test123", 
-            email: "tom@test.com", 
-            firstName: "Tom", 
-            isAdmin: true
+            username: "chuck",
+            password: "test123",
+            email: "chuck@test.com",
+            firstName: "Chuck"
         }
     )
+    // await User.register(
+    //     {
+    //         username: "tom", 
+    //         password: "test123", 
+    //         email: "tom@test.com", 
+    //         firstName: "Tom", 
+    //         isAdmin: true
+    //     }
+    // )
 }
 
 async function commonBeforeEach() {
@@ -33,9 +42,14 @@ async function commonAfterAll() {
     await db.end()
 }
 
+const adminJWT = createToken({username: "tom", isAdmin: true})
+const userJWT = createToken({username: "chuck", isAdmin: false})
+
 module.exports = {
     commonBeforeAll
     commonBeforeEach
     commonAfterAll
     commonAfterEach
+    adminJWT
+    userJWT
 }
