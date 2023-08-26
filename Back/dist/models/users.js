@@ -84,7 +84,8 @@ class User {
                 username,
                 first_name AS "firstName",
                 email,
-                is_admin AS "isAdmin"
+                is_admin AS "isAdmin",
+                user_id AS "userId"
             FROM users
             WHERE username = $1`, [username]);
         const user = result.rows[0];
