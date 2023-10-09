@@ -69,7 +69,9 @@ function ensureIsAdminOrCorrectUser(req, res, next) {
             const token = authHeader.replace(/^[Bb]earer /, "").trim();
             const user = jwt.verify(token, SECRET_KEY)
       
-            if (user.username !== req.params.username && !user.isAdmin) throw new UnauthorizedError()
+            if (user.username !== req.params.username && !user.isAdmin) {
+                throw new UnauthorizedError()
+            } 
         } else {
             throw new UnauthorizedError()
         }
