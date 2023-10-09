@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(morgan('tiny'));
 app.use(authenticateJWT);
 app.use("/auth", authRoutes);
-// app.use("/entry", entryRoutes)
+app.use("/entry", entryRoutes);
 app.use("/user", userRoutes);
 // Handle 404 errors
 app.use((req, resp, next) => {
