@@ -23,6 +23,7 @@ const toSnakeCase = (word) => {
  *
  */
 const sqlForPartialUpdate = (dataToUpdate) => {
+    console.log('Data to update\n', dataToUpdate);
     const keys = Object.keys(dataToUpdate);
     if (keys.length === 0)
         throw new BadRequestError("No data");
@@ -36,4 +37,15 @@ const sqlForPartialUpdate = (dataToUpdate) => {
         values: Object.values(dataToUpdate)
     };
 };
-module.exports = { sqlForPartialUpdate };
+const sqlForEntryCreation = (entry) => {
+    const keys = Object.keys(entry);
+    const values = Object.values(entry);
+    const snakeCols = keys.map((colName, idx) => {
+        return toSnakeCase(colName);
+    });
+    const placeholders = keys.map((key, idx) => {
+        return "$" + `${idx + 1}`;
+    });
+    return ({ snakeCols, placeholders, values });
+};
+module.exports = { sqlForPartialUpdate, sqlForEntryCreation };

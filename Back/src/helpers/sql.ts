@@ -27,6 +27,7 @@ const toSnakeCase = (word) => {
  */
 
 const sqlForPartialUpdate = (dataToUpdate: Object): Object => {
+    console.log('Data to update\n', dataToUpdate)
     const keys = Object.keys(dataToUpdate)
 
     if (keys.length === 0) throw new BadRequestError("No data")
@@ -43,4 +44,33 @@ const sqlForPartialUpdate = (dataToUpdate: Object): Object => {
     }
 }
 
-module.exports = {sqlForPartialUpdate}
+interface newEntry {
+    numSeizures: Number,
+    numAuras: Number,
+    stressLevel: Number,
+    activityLevel: Number,
+    numDrinks: Number,
+    sleepQuality: Number,
+    userId: Number,
+    tookAmMeds?: boolean,
+    tookPmMeds?: boolean,
+    comment?: String,
+    entryDate?: String
+}
+
+const sqlForEntryCreation = (entry: newEntry) => {
+    const keys = Object.keys(entry)
+    const values = Object.values(entry)
+
+    const snakeCols: Array<String> = keys.map((colName, idx) => {
+        return toSnakeCase(colName)
+    })
+
+    const placeholders: Array<String> = keys.map((key, idx) => {
+        return "$" + `${idx + 1}`
+    })
+
+    return({snakeCols, placeholders, values})
+}
+
+module.exports = {sqlForPartialUpdate, sqlForEntryCreation}
