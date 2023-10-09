@@ -27,7 +27,7 @@ class User {
       */
 
     static async register(
-        { username, password, email, firstName, isAdmin = false }
+        { username, password, email, firstName, isAdmin = false, getEmails = false }
     ) {
         // console.log(isAdmin)
         const duplicateUsernameCheck = await db.query(
@@ -57,17 +57,19 @@ class User {
                 password,
                 first_name,
                 email,
-                is_admin
+                is_admin,
+                get_emails
             )
-            VALUES ($1, $2, $3, $4, $5)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING
                 username,
                 password,
                 first_name as "firstName",
                 email,
-                is_admin as "isAdmin"
+                is_admin as "isAdmin",
+                get_emails as "getEmails"
             `,
-            [username, hashedPassword, firstName, email, isAdmin]
+            [username, hashedPassword, firstName, email, isAdmin, getEmails]
         )
 
         return result.rows[0]
