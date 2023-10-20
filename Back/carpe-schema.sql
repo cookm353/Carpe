@@ -52,14 +52,16 @@ CREATE TABLE users (
 
 CREATE TABLE entry (
     entry_id SERIAL PRIMARY KEY,
-    entry_date DATE NOT NULL,
-    took_am_meds BOOLEAN NOT NULL,
-    took_pm_meds BOOLEAN NOT NULL,
+    entry_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    took_am_meds BOOLEAN,
+    took_pm_meds BOOLEAN,
     stress_level DECIMAL,
     activity_level DECIMAL,
     num_drinks INTEGER,
     sleep_quality DECIMAL,
     comment VARCHAR,
+    num_auras INTEGER NOT NULL,
+    num_seizures INTEGER NOT NULL,
     user_id INTEGER NOT NULL
         REFERENCES users ON DELETE CASCADE
 );
