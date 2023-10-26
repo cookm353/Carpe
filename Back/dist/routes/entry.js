@@ -13,16 +13,15 @@ const User = require("../models/users");
 // const userNewSchema = require('../../schemas/userNewSchema.json')
 // const userUpdateSchema = require("../../schemas/userUpdateSchema.json")
 const router = express.Router();
-/** POST /entry/
+/** POST /entry/:username
  *
  * Allows new entries to be added
  *
  * Authorization required: correct user or admin
  */
-router.post("/", ensureLoggedIn, async (req, res, next) => {
+router.post("/:username", ensureLoggedIn, async (req, res, next) => {
     try {
-        const token = req.headers.authorization;
-        const { username } = jwt.verify(token, SECRET_KEY);
+        const { username } = req.params;
         const entryInfo = req.body;
         const entry = await Entry.create(username, entryInfo);
         return res.status(201).json({ entry });
@@ -37,8 +36,37 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
  *
  * Auth require: correct user or admin
  */
-router.get("/", ensureLoggedIn, async (req, res, next) => {
+router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
     try {
+        const { username } = req.params;
+        const entries = await Entry.getAll(username);
+        return res.json({ entries });
+    }
+    catch (err) {
+        return next(err);
+    }
+});
+/** GET /entry/:username/:date
+ *
+ * Retrieve entries made by user on specified date
+ *
+ * Auth required: correct user or admin
+ */
+router.get("/:username/:date", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+    try {
+        const { username, date } = req.params;
+        const entry = await Entry.get(username, date);
+        return res.json({ entry });
+    }
+    catch (err) {
+        return next(err);
+    }
+});
+router.delete("/:username/:date", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+    try {
+        const { username, date } = req.params;
+        await Entry.delete(username, date);
+        return res.json({ "foo": "bar" });
     }
     catch (err) {
         return next(err);

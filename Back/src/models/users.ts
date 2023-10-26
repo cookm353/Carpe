@@ -77,9 +77,13 @@ class User {
 
     /** Authenticate a user's attempt to login
      * 
-     * Returns true if user is successfully authenticated 
+     * @param username User's username
+     * @param password Password for username
+     * 
+     * @returns User object if user is successfully authenticated;
+     * throws UnauthorizedError if attempt is invalid
      */
-    static async authenticate(username, password) {
+    static async authenticate(username, password): Promise<User> {
         const result = await db.query(
             `SELECT 
                 username, 
@@ -109,7 +113,6 @@ class User {
      * Returns NotFoundError if user can't be found
      * 
      */
-
     static async getByUsername(username) {
         const result = await db.query(
             `SELECT
@@ -249,7 +252,18 @@ class User {
      */
 
     static async getEntries(username) {
+        const userCheck = await db.query(
+            `SELECT user_id
+            FROM users
+            WHERE username = $1`,
+            [username]
+        )
 
+        const userId = userCheck.rows[0]
+
+        if (!userId) {
+            if (!userId) throw new NotFoundError(`No user: ${username}`)
+        }
     }
 }
 

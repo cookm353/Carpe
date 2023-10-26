@@ -3,46 +3,38 @@ const db = require('../db')
 const { BadRequestError, NotFoundError } = require ('../expressError')
 const { sqlForPartialUpdate, sqlForEntryCreation } = require("../helpers/sql")
 
-const date = new Date()
-const today = date.toISOString().slice(0, 10)
+const today = new Date().toISOString().slice(0, 10)
+const monthMap = {
+    "jan": 0, "feb": 1, "mar": 2, "apr": 3,
+    "may": 4, "jun": 5, "jul": 6, "aug": 7,
+    "sep": 8, "oct": 9, "nov": 10, "dec": 11
+
+}
 
 class Entry {
-    tookAmMeds: boolean
-    tookPmMeds: boolean
-    stressLevel: Number
-    activityLevel: Number
-    numDrinks: Number
-    sleepQuality: Number
-    comment: String
-    userId: Number
-    entryDate: String
-    numSeizures: Number
-    numAuras: Number
 
-    constructor(
-        numSeizures: Number,
-        numAuras: Number,
-        stressLevel: Number,
-        activityLevel: Number,
-        numDrinks: Number,
-        sleepQuality: Number,
-        userId: Number,
-        tookAmMeds?: boolean,
-        tookPmMeds?: boolean,
-        comment?: String,
-        entryDate?: String
-    ) {
-        this.stressLevel = stressLevel
-        this.activityLevel = activityLevel
-        this.numDrinks = numDrinks
-        this.sleepQuality = sleepQuality
-        this.userId = userId
-        this.numSeizures = numSeizures
-        this.numAuras = numAuras
-        this.tookAmMeds = tookAmMeds ? tookAmMeds : null
-        this.tookPmMeds = tookPmMeds ? tookPmMeds : null
-        this.comment = comment ? comment : ""
-        this.entryDate = entryDate ? entryDate : today
+    /** Method for transforming raw date string into one that can be used
+     * with the database
+     * 
+     * @param dateString Raw string for entry date taken from URL params
+     * @returns Date string properly formatted
+     */
+    static parseDate(dateString: string): string {
+        const monthMap = {
+            "jan": 0, "feb": 1, "mar": 2, "apr": 3,
+            "may": 4, "jun": 5, "jul": 6, "aug": 7,
+            "sep": 8, "oct": 9, "nov": 10, "dec": 11
+        }
+
+        if (!Number.parseInt(dateString[1])) {
+            dateString = `0${dateString}`
+        }
+        
+        const day: string = dateString.slice(0, 2)
+        const month: string = monthMap[dateString.slice(2, 5)]
+        const year: string = dateString.slice(5)
+
+        return new Date(year, month, day).toISOString().slice(0, 10)
     }
 
     /** Create a new entry from data, update DB, and return entry
@@ -84,36 +76,37 @@ class Entry {
 
     }
 
-    /** Retrieves an entry
+    /** Retrieves an entry on the specified date
      * 
-     * Throws NotFoundError if or user entry doesn't exist
+     * @param username User whose entry is being returned
+     * @param date Date of the entry
+     * @returns Date from database or throws an error
      */
-
-    static async get( username: String, entryDate: String=today ) {
-        
+    static async get( username: string, date: string ) {
         const userResult = await db.query(
             `SELECT user_id
             FROM users
             WHERE username = $1`,
             [username]
         )
-
         const userId = userResult.rows[0]['user_id']
         
         if (!userId) throw new NotFoundError(`No user: ${username}`)
+
+        const entryDate = Entry.parseDate(date)
         
         const result = await db.query(
             `SELECT *
-            FROM entry
+            FROM entries
             WHERE user_id = $1
                 AND entry_date = $2
             `,
             [userId, entryDate]
         )
 
-        const entry = result.rows[0]
+        const entry: getResult = result.rows[0]
 
-        if (!entry) throw new NotFoundError(`No entry for ${entryDate}`)
+        if (!entry) throw new NotFoundError(`No entry for ${date}`)
 
         return entry
     }
@@ -134,25 +127,59 @@ class Entry {
         
         const result = await db.query(
             `SELECT *
-            FROM entry
+            FROM entries
             WHERE user_id = $1
+            ORDER BY entry_date
             `,
             [userId]
         )
 
-        const entry = result.rows[0]
+        const entries: getAllResult = result.rows
+        console.log(entries)
 
-        if (!entry) throw new NotFoundError(`No entries found`)
+        if (!entries[0]) throw new NotFoundError(`No entries found`)
 
-        return entry
+        return entries
     }
 
-    static async update ( userId, entryDate: Date) {
+    static async update ( username: string, entryDate: string) {
 
     }
 
-    static async delete ( userId, entryDate) {
+    static async delete ( username: string, date: string) {
+        const userCheck = await db.query(
+            `SELECT user_id
+            FROM users
+            WHERE username = $1`,
+            [username]
+        )
 
+        const userId = userCheck.rows[0]['user_id']
+
+        if (!userId) {
+            if (!userId) throw new NotFoundError(`No user: ${username}`)
+        }
+
+        const entryDate = Entry.parseDate(date)
+        console.log(userId, entryDate)
+        /*
+        const result = await db.query(
+            `DELETE
+            FROM entries
+            WHERE user_id = $1
+                AND entry_date = $2`,
+                [userId, entryDate]
+        )
+        */
+        const result = await db.query(
+            `SELECT *
+            FROM entries
+            WHERE user_id = $1
+                AND entry_date = $2`,
+            [userId, entryDate]
+        )
+
+        console.log(result.rows[0])
     }
 }
 
