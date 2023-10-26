@@ -5,7 +5,7 @@ import axios from "axios"
 import url from "./Helpers"
 import "./LoginForm.css"
 
-const LoginForm = ({ setToken }) => {
+const LoginForm = ({ setToken, setUsername }) => {
     const initialState = {
         username: "",
         password: ""
@@ -25,7 +25,6 @@ const LoginForm = ({ setToken }) => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        // const url = "http://localhost:3001/auth/token"
         const { username, password } = formData
         setFormData(initialState)
 
@@ -34,9 +33,8 @@ const LoginForm = ({ setToken }) => {
         })
         
         const {token} = resp.data
-        setToken({
-            token: token, 
-            username: username})
+        setToken(token)
+        setUsername(username)
         console.log("foo")
         navigate('/')
     }
