@@ -42,18 +42,17 @@ const NewEntryForm = () => {
         for (let field in formData) {
             console.log(field, formData[field])
         }
-        const commentField = document.querySelector("#comment")
-        commentField.value = ""
+
 
         setFormData(initialState)
     }
 
     return (
         <form onSubmit={handleSubmit} className="form container" id="newEntryForm">
-            <div className="form-check mb-3 container-flex" id="amMeds">
+            <div className="form-check mb-3 d-flex" id="amMeds">
                 <div className="row">
                     <p>Took morning medications</p>
-                    <div id="didTakeAm" className="col-2">
+                    <div id="didTakeAm" className="col">
                         <input 
                             name="tookAmMeds"
                             id="didTakeAmMeds"
@@ -64,7 +63,7 @@ const NewEntryForm = () => {
                         />
                         <label htmlFor="didTakeAmMeds" className="form-check-label">Yes</label>
                     </div>
-                    <div id="didn'tTakeAm" className="col-2">
+                    <div id="didn'tTakeAm" className="col">
                         <input 
                             name="tookAmMeds"
                             id="didn'tTakeAmMeds"
@@ -79,7 +78,7 @@ const NewEntryForm = () => {
                                 No
                         </label>
                     </div>
-                    <div id="don'tTakeAm" className="col-2">
+                    <div id="don'tTakeAm" className="col">
                         <input 
                             name="tookAmMeds"
                             id="don'tTakeAmMeds"
@@ -92,7 +91,7 @@ const NewEntryForm = () => {
                     </div>
                 </div>
             </div>
-            <div className="form-check mb-3 container-flex" id="pmMeds">
+            <div className="form-check mb-3 d-flex" id="pmMeds">
                 <div className="row">
                     <p>Took evening medications</p>
                     <div className="col">
