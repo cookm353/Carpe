@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 // import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { library } from '@fortawesome/fontawesome-svg-core'
+// import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 import './App.css'
 
 import LoginForm from './LoginForm'
@@ -16,6 +19,8 @@ const App = () => {
 
 	const [token, setToken] = useState(initialState)
 	const [username, setUsername] = useState(initialState)
+
+	library.add(faUser)
   
 	return (
 		<>
@@ -26,9 +31,12 @@ const App = () => {
 					<Route exact path="/" element={<Home token={token}/>}/>
 					<Route exact path="/login" element={<LoginForm setToken={setToken} setUsername={setUsername}/>}/>
 					<Route exact path="/register" element={<RegisterForm/>}/>
+					{/* <Route exact path="/newEntry" element={<NewEntryForm/>}/> */}
+					<Route exact path="/entries" element={<DateAccordion/>}/>
 					{/* <Route exact path="/:username" element={</>}/> */}
 				</Routes>
 			</BrowserRouter>
+			<NewEntryForm/>
 			{
 				token ?
 				<h1>{username}</h1> :
