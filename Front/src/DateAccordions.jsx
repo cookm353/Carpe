@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 
+import url from "./Helpers";
+
 const DateAccordion = ({token}) => {
-    const url = "http://localhost:3001/entry/"
+    const url = `${url}/entry`
     const [entries, setEntries] = useState()
     const year = new Date().getYear() + 1900
     const months = {
