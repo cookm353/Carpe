@@ -1,6 +1,11 @@
-import React, { useState} from "react"
+import React, { useState } from "react"
+import axios from "axios"
 
-const NewEntryForm = () => {
+import url from "./Helpers"
+import "./NewEntryForm.css"
+
+
+const NewEntryForm = ({ token }) => {
     const d = new Date()
     const today = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`
 
@@ -9,8 +14,8 @@ const NewEntryForm = () => {
         tookPmMeds: "yes",
         stressLevel: 5,
         activityLevel: 5,
-        numDrinks: 0,
         sleepQuality: 5,
+        numDrinks: 0,
         numAuras: 0,
         numSeizures: 0,
         comment: "",
@@ -28,7 +33,7 @@ const NewEntryForm = () => {
         })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const {
             tookAmMeds, tookPmMeds,
@@ -36,9 +41,15 @@ const NewEntryForm = () => {
             sleepQuality, numAuras, numSeizures,
             comment, entryDate
         } = formData
-        console.log(tookAmMeds)
+
+        const resp = await axios.post(`${url}/entries`, formData, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
         console.log(formData)
-        console.log(comment)
+
         for (let field in formData) {
             console.log(field, formData[field])
         }
@@ -49,124 +60,179 @@ const NewEntryForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className="form container" id="newEntryForm">
-            <div className="form-check mb-3 d-flex" id="amMeds">
-                <div className="row">
-                    <p>Took morning medications</p>
-                    <div id="didTakeAm" className="col">
-                        <input 
-                            name="tookAmMeds"
-                            id="didTakeAmMeds"
-                            value="yes"
-                            type="radio"
-                            // className="form-check-input"
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="didTakeAmMeds" className="form-check-label">Yes</label>
+            <div className="row">
+                <div className="col-2"></div>
+                <div className="col-8 d-flex justify-content-around">
+                    <div className="">
+                        <div className="form-check mb-2 d-flex row" id="amMeds">
+                            <div className="row">
+                                <p>Took morning medications</p>
+                                <div id="didTakeAm" className="col">
+                                    <input 
+                                        name="tookAmMeds"
+                                        id="didTakeAmMeds"
+                                        value="yes"
+                                        type="radio"
+                                        // className="form-check-input"
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor="didTakeAmMeds" className="form-check-label">Yes</label>
+                                </div>
+                                <div id="didn'tTakeAm" className="col">
+                                    <input 
+                                        name="tookAmMeds"
+                                        id="didn'tTakeAmMeds"
+                                        value="no"
+                                        type="radio"
+                                        // className="form-check-input"
+                                        onChange={handleChange}
+                                    />
+                                    <label
+                                        htmlFor="didn'tTakeAmMeds"
+                                        className="form-check-label">
+                                            No
+                                    </label>
+                                </div>
+                                <div id="don'tTakeAm" className="col">
+                                    <input 
+                                        name="tookAmMeds"
+                                        id="don'tTakeAmMeds"
+                                        value="n/a"
+                                        type="radio"
+                                        // className="form-check-input"
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor="don'tTakeAmMeds" className="form-check-label">N/A</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="form-check mb-2 d-flex row" id="pmMeds">
+                            <div className="row">
+                                <p>Took evening medications</p>
+                                <div className="col">
+                                    <input 
+                                        name="tookPmMeds"
+                                        id="didTakePmMeds"
+                                        value={"yes"}
+                                        type="radio"
+                                        // className="form-check-input"
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor="didTakePmMeds" className="form-label">Yes</label>
+                                </div>
+                                <div className="col">
+                                    <input 
+                                        name="tookPmMeds"
+                                        id="didn'tTakePmMeds"
+                                        value={"no"}
+                                        type="radio"
+                                        // className="form-check-input"
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor="didn'tTakePmMeds" className="form-label">No</label>
+                                </div>
+                                <div className="col">
+                                    <input 
+                                        name="tookPmMeds"
+                                        id="don'tTakePmMeds"
+                                        value={"n/a"}
+                                        type="radio"
+                                        // className="form-check-input"
+                                        onChange={handleChange}
+                                    />
+                                    <label htmlFor="don'tTakePmMeds" className="form-label">N/A</label><br/>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <div id="didn'tTakeAm" className="col">
-                        <input 
-                            name="tookAmMeds"
-                            id="didn'tTakeAmMeds"
-                            value="no"
-                            type="radio"
-                            // className="form-check-input"
+                </div>
+                <div className="col-2"></div>
+            </div>
+
+            <div id="stress">
+                <label htmlFor="stressLevel" className="form-label">Stress level: {formData.stressLevel}</label>
+                <div className="row">
+                    <div className="col-4"></div>
+                    <div className="col-4 d-flex justify-content-center">
+                        <input
+                            name="stressLevel"
+                            id="stressLevel"
+                            min="0"
+                            max="10"
+                            type="range"
+                            className="form-range"
                             onChange={handleChange}
-                        />
-                        <label
-                            htmlFor="didn'tTakeAmMeds"
-                            className="form-check-label">
-                                No
+                            /><br/>
+
+                    </div>
+                    <div className="col-4"></div>
+                </div>
+            </div>
+
+            <div id="activity">
+                <div className="row">
+                    <label htmlFor="activityLevel" className="form-label">Activity level: {formData.activityLevel}</label>
+                    <div className="col-4"/>
+                    <div className="col-4 d-flex justify-content-center">
+                    <input
+                        name="activityLevel"
+                        id="activityLevel"
+                        min="0"
+                        max="10"
+                        type="range"
+                        className="form-range"
+                        onChange={handleChange}
+                        /><br/>
+                    </div>
+                    <div className="col-4"/>
+                </div>
+            </div>
+
+            <div id="sleep">
+                <label htmlFor="sleepQuality" className="form-label">Sleep quality: {formData.sleepQuality}</label>
+                <div className="row">
+                    <div className="col-4"/>
+                    <div className="col-4 d-flex justify-content-center">
+                        <input
+                            name="sleepQuality"
+                            id="sleepQuality"
+                            min="0"
+                            max="10"
+                            type="range"
+                            className="form-range"
+                            onChange={handleChange}
+                        /><br/>
+
+                    </div>
+                    <div className="col-4"/>
+                </div>
+
+            </div>
+
+            <div id="drinks">
+                <div className="row">
+                    <div className="col-4"/>
+                    <div className="col-2">
+                        <label htmlFor="numDrinks" className="form-label">
+                            Number of drinks: 
                         </label>
                     </div>
-                    <div id="don'tTakeAm" className="col">
-                        <input 
-                            name="tookAmMeds"
-                            id="don'tTakeAmMeds"
-                            value="n/a"
-                            type="radio"
-                            // className="form-check-input"
+                    <div className="col-2">
+                        <input
+                            name="numDrinks"
+                            id="numDrinks"
+                            type="number"
                             onChange={handleChange}
-                        />
-                        <label htmlFor="don'tTakeAmMeds" className="form-check-label">N/A</label>
+                        /><br/>
                     </div>
+                    <div className="col-4"/>
                 </div>
             </div>
-            <div className="form-check mb-3 d-flex" id="pmMeds">
-                <div className="row">
-                    <p>Took evening medications</p>
-                    <div className="col">
-                        <input 
-                            name="tookPmMeds"
-                            id="didTakePmMeds"
-                            value={"yes"}
-                            type="radio"
-                            // className="form-check-input"
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="didTakePmMeds" className="form-label">Yes</label>
-                    </div>
-                    <div className="col">
-                        <input 
-                            name="tookPmMeds"
-                            id="didn'tTakePmMeds"
-                            value={"no"}
-                            type="radio"
-                            // className="form-check-input"
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="didn'tTakePmMeds" className="form-label">No</label>
-                    </div>
-                    <div className="col">
-                        <input 
-                            name="tookPmMeds"
-                            id="don'tTakePmMeds"
-                            value={"n/a"}
-                            type="radio"
-                            // className="form-check-input"
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="don'tTakePmMeds" className="form-label">N/A</label><br/>
-                    </div>
-                </div>
+
+            <div id="auras">
+
             </div>
-            
-            <label htmlFor="stressLevel" className="form-label">Stress level: {formData.stressLevel}</label>
-            <input
-                name="stressLevel"
-                id="stressLevel"
-                min="0"
-                max="10"
-                type="range"
-                className="form-range"
-                onChange={handleChange}
-                /><br/>
-            <label htmlFor="activityLevel" className="form-label">Activity level: {formData.activityLevel}</label>
-            <input
-                name="activityLevel"
-                id="activityLevel"
-                min="0"
-                max="10"
-                type="range"
-                className="form-range"
-                onChange={handleChange}
-                /><br/>
-            <label htmlFor="sleepQuality" className="form-label">Sleep quality: {formData.sleepQuality}</label>
-            <input
-                name="sleepQuality"
-                id="sleepQuality"
-                min="0"
-                max="10"
-                type="range"
-                className="form-range"
-                onChange={handleChange}
-            /><br/>
-            <label htmlFor="numDrinks" className="form-label">Number of drinks: </label>
-            <input
-                name="numDrinks"
-                id="numDrinks"
-                type="number"
-                onChange={handleChange}
-            /><br/>
             <label htmlFor="numAuras" className="form-label">Number of auras: </label>
             <input
                 id="numAuras"
@@ -174,6 +240,10 @@ const NewEntryForm = () => {
                 type="number"
                 onChange={handleChange}
             /><br/>
+
+            <div id="seizures">
+
+            </div>
             <label htmlFor="numSeizures" className="form-label">Number of seizures: </label>
             <input
                 id="numSeizures"
@@ -181,6 +251,10 @@ const NewEntryForm = () => {
                 type="number"
                 onChange={handleChange}
             /><br/>
+
+            <div id="comments">
+
+            </div>
             <label htmlFor="comment" className="form-label">Comments: </label>
             <input
                 id="comment"
@@ -188,6 +262,10 @@ const NewEntryForm = () => {
                 type="text"
                 onChange={handleChange}
             /><br/>
+
+            <div id="date">
+
+            </div>
             <label htmlFor="entryDate" className="form-label">Entry date:</label>
             <input
                 type="date"
@@ -195,7 +273,7 @@ const NewEntryForm = () => {
                 name="entryDate"
                 onChange={handleChange}
             /><br/>
-            <button>Submit</button>
+            <button className="btn btn-primary">Submit</button>
         </form>
     )
 }
