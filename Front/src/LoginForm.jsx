@@ -25,17 +25,14 @@ const LoginForm = ({ setToken, setUsername }) => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const { username, password } = formData
+        const { username } = formData
         setFormData(initialState)
 
-        const resp = await axios.post(`${url}/auth/token`, {
-            username, password
-        })
+        const resp = await axios.post(`${url}/auth/token`, formData)
         
-        const {token} = resp.data
+        const { token } = resp.data
         setToken(token)
         setUsername(username)
-        console.log("foo")
         navigate('/')
     }
 
