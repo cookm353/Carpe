@@ -26,17 +26,17 @@ const App = () => {
 		<>
 		{/* Open Unit41 for help on React Router! */}
 			<BrowserRouter>
-				<Navbar username={username} setUsername={setUsername} setToken={setToken} className="my-1"/>
+				<Navbar username={username} token={token} setUsername={setUsername} setToken={setToken} className="my-1"/>
 				<Routes>
 					<Route exact path="/" element={<Home token={token}/>}/>
 					<Route exact path="/login" element={<LoginForm setToken={setToken} setUsername={setUsername}/>}/>
 					<Route exact path="/register" element={<RegisterForm/>}/>
+					<Route exact path="/newEntry" element={<NewEntryForm token={token}/>}/>
 					{/* <Route exact path="/newEntry" element={<NewEntryForm/>}/> */}
 					<Route exact path="/entries" element={<DateAccordion/>}/>
-					{/* <Route exact path="/:username" element={</>}/> */}
+					<Route exact path="/:username" element={<Home/>}/>
 				</Routes>
 			</BrowserRouter>
-			<NewEntryForm/>
 			{
 				token ?
 				<h1>{username}</h1> :
