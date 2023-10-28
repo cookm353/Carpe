@@ -58,6 +58,7 @@ function ensureIsAdmin(req, res, next) {
 function ensureIsAdminOrCorrectUser(req, res, next) {
     try {
         const authHeader = req.headers && req.headers.authorization;
+        console.log(authHeader);
         if (authHeader) {
             const token = authHeader.replace(/^[Bb]earer /, "").trim();
             const user = jwt.verify(token, SECRET_KEY);

@@ -92,6 +92,7 @@ class Entry {
         const result = await db.query(`SELECT *
             FROM entries
             WHERE user_id = $1
+            ORDER BY entry_date
             `, [userId]);
         const entries = result.rows;
         console.log(entries);
