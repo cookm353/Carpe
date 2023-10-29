@@ -25,6 +25,9 @@ const Navbar = ({username, token, setUsername, setToken}) => {
                             <NavLink className="link" to="/newEntry">
                                 New Entry
                             </NavLink>
+                            <NavLink className="link" to="/entries">
+                                View Entries
+                            </NavLink>
                         </div> :
                         <></>
                         }
