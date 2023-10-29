@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import url from "./Helpers";
@@ -12,6 +13,7 @@ const RegisterForm = () => {
     }
 
     const [formData, setFormData] = useState(initialState)
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
         let {name, value} = e.target
@@ -30,6 +32,7 @@ const RegisterForm = () => {
         const resp = await axios.post(`${url}/user/register`, {
             username, email, firstName, password
         })
+        navigate('/')
     }
 
 
