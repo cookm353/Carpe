@@ -4,10 +4,9 @@ import axios from "axios";
 import url from "./Helpers";
 
 const DateAccordion = ({token, username}) => {
-    const url = `${url}/entry`
-    const [entries, setEntries] = useState()
+    const [entries, setEntries] = useState([])
     const year = new Date().getYear() + 1900
-    const months = {
+    const monthMap = {
         1: "January", 2: "February", 3: "March",
         4: "April", 5: "May", 6: "June",
         7: "July", 8: "August", 9: "September",
@@ -16,20 +15,18 @@ const DateAccordion = ({token, username}) => {
 
     useEffect(() => {
         async function getEntries() {
-            const resp = await axios.get(`${url}/${username}`, {
+            const resp = await axios.get(`${url}/entry/${username}`, {
                 headers: {
                     Authorization: token
-                    // Authorization: token.token
                 }
             })
-            const entryList = resp.data.entries
-            setEntries(resp.data.entries)
-            console.log('foo')
-            console.log(entries)
+            console.log(resp)
+            const entryList = resp.data.body
+            setEntries(entryList)
 
         }
         getEntries()
-    }, [token])
+    }, [token, username])
 
     return (
         <>
