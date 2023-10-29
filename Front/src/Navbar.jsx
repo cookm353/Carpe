@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from 'react-router-dom'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NewEntryForm from "./NewEntryForm";
-// import { faUser } from '@fortawesome/free-solid-svg-icons'
-// import RegisterForm from "./RegisterForm";
-
-
-
+// import { faUser } from '@fortawesome/free-solid-svg-icons
 
 const Navbar = ({username, token, setUsername, setToken}) => {
     const handleLogout = () => {
@@ -26,7 +21,7 @@ const Navbar = ({username, token, setUsername, setToken}) => {
                             </NavLink>
                         </div>
                         {token ?
-                        <div className="col">
+                        <div className="col d-flex justify-content-between">
                             <NavLink className="link" to="/newEntry">
                                 New Entry
                             </NavLink>
