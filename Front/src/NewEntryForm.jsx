@@ -1,13 +1,15 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
 import url from "./Helpers"
 import "./NewEntryForm.css"
 
 
-const NewEntryForm = ({ token }) => {
+const NewEntryForm = ({ token, username }) => {
     const d = new Date()
     const today = `${d.getUTCFullYear()}-${d.getUTCMonth() + 1}-${d.getUTCDate()}`
+    const navigate = useNavigate()
 
     const initialState = {
         tookAmMeds: "yes",
@@ -35,27 +37,14 @@ const NewEntryForm = ({ token }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const {
-            tookAmMeds, tookPmMeds,
-            stressLevel, activityLevel, numDrinks,
-            sleepQuality, numAuras, numSeizures,
-            comment, entryDate
-        } = formData
-
-        const resp = await axios.post(`${url}/entries`, formData, {
+            const resp = await axios.post(`${url}/entry/${username}`, formData, {
             headers: {
                 'Authorization': token
             }
         })
 
-        console.log(formData)
-
-        for (let field in formData) {
-            console.log(field, formData[field])
-        }
-
-
         setFormData(initialState)
+        navigate('/')
     }
 
     return (
