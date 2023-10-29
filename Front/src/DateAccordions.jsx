@@ -3,7 +3,7 @@ import axios from "axios";
 
 import url from "./Helpers";
 
-const DateAccordion = ({token}) => {
+const DateAccordion = ({token, username}) => {
     const url = `${url}/entry`
     const [entries, setEntries] = useState()
     const year = new Date().getYear() + 1900
@@ -16,9 +16,9 @@ const DateAccordion = ({token}) => {
 
     useEffect(() => {
         async function getEntries() {
-            const resp = await axios.get(`${url}cookm353`, {
+            const resp = await axios.get(`${url}/${username}`, {
                 headers: {
-                    Authorization: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvb2ttMzUzIiwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjk2NjE2NTkzfQ.PcGYEmm3OyhotPLOupa7360gPo2_4Pcz0efWaFIVM7Y"
+                    Authorization: token
                     // Authorization: token.token
                 }
             })
