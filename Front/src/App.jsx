@@ -9,7 +9,7 @@ import './App.css'
 import LoginForm from './LoginForm'
 // import UserInfo from "./UserInfo"
 import NewEntryForm from './NewEntryForm'
-import DateAccordion from './DateAccordions'
+import Entries from './Entries'
 import Navbar from './Navbar'
 import Home from './Home'
 import RegisterForm from './RegisterForm'
@@ -58,16 +58,10 @@ const App = () => {
 					<Route exact path="/login" element={<LoginForm setToken={setToken} setUsername={setUsername}/>}/>
 					<Route exact path="/register" element={<RegisterForm token={token} username={username}/>}/>
 					<Route exact path="/newEntry" element={<NewEntryForm token={token} username={username}/>}/>
-					<Route exact path="/entries" element={<DateAccordion token={token} username={username}/>}/>
+					<Route exact path="/entries" element={<Entries token={token} username={username}/>}/>
 					<Route exact path="/:username" element={<Home/>}/>
 				</Routes>
 			</BrowserRouter>
-			{
-				token ?
-				<h1>{username}</h1> :
-				// <DateAccordion token={token} username={username}/> :
-				<h1>{"Nope"}</h1>
-			}
 		</>
 	)
 }

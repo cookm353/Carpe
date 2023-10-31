@@ -142,6 +142,7 @@ class Entry {
         return entries
     }
 
+
     /* Retrieve the years for which there are entries */
 
     static async getEntryYears (username: string) {
@@ -177,11 +178,13 @@ class Entry {
         return entries
     }
 
+
     /* Update entry */
 
     static async update ( username: string, entryDate: string) {
 
     }
+    
 
     /* Delete entry */
 

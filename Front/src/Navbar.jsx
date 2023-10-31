@@ -22,12 +22,13 @@ const Navbar = ({username, token, setUsername, setToken}) => {
                         </div>
                         {token ?
                         <div className="col d-flex justify-content-between">
-                            <NavLink className="link" to="/newEntry">
+                            {/* <NavLink className="link" to="/newEntry">
                                 New Entry
                             </NavLink>
                             <NavLink className="link" to="/entries">
                                 View Entries
-                            </NavLink>
+                            </NavLink> */}
+                            <NavLink className="link" to="/entries">Entries</NavLink>
                         </div> :
                         <></>
                         }

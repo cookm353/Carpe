@@ -1,20 +1,62 @@
 import React, { useState } from "react"
-import MonthAccordion from "./MonthAccordions"
 
 const YearAccordion = ({entries, year}) => {
-    console.log("foo")
+    const [months, setMonths] = useState([])
+    const [monthMap, setMonthMap] = useState({})
     
+    const monthNames = {
+        "01": "January", "02": "February", '03': "March",
+        "04": "April", "05": "May", "06": "June",
+        "07": "July", '08': "August", "09": "September",
+        '10': "October", "11": "November", "12": "December"
+    }
+
+    const makeMonthMap = (entries) => {
+        return entries.map(e => {
+            const month = e.entry_date.slice(5,7)
+            const monthName = monthNames[month]
+
+            if (!monthMap[monthName]) {
+                monthMap[monthName] = e
+            } else {
+                monthMap[monthName] = [...monthMap[monthName], e]
+            }
+        })
+    }
+
+    const handleClick = (e) => {
+        e.preventDefault()
+        if (Object.keys(monthMap).length === 0) {
+            const newMap = {}
+            
+            entries.forEach(e => {
+                const month = e.entry_date.slice(5, 7)
+                const monthName = monthNames[month]
+
+                if (!newMap[monthName]) {
+                    newMap[monthName] = e
+                } else {
+                    newMap[monthName] = {...newMap, e}
+                }
+            })
+            setMonthMap(newMap)
+        }
+    }
+
     return (
         <>
-            <div className="accordion-item">
-                <h2 className="accordion-header">
-                    <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    {year}
-                    </button>
-                </h2>
-                <div id="collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                    <div className="accordion-body">
-                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            <div className="accordion accordion-flush" id="accordionFlushExample">
+                <div className="accordion-item">
+                    <h2 className="accordion-header">
+                        <button onClick={handleClick} className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                        {year}
+                        </button>
+                    </h2>
+
+                    <div id="flush-collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        {Object.keys(monthMap).map(m => (
+                            <h1>{m}</h1>
+                        ))}
                     </div>
                 </div>
             </div>
