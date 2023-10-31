@@ -142,9 +142,48 @@ class Entry {
         return entries
     }
 
+    /* Retrieve the years for which there are entries */
+
+    static async getEntryYears (username: string) {
+        const userCheck = await db.query(
+            `SELECT user_id
+            FROM users
+            WHERE username = $1`,
+            [username]
+        )
+
+        const userId = userCheck.rows[0]['user_id']
+        console.log(username)
+        
+        if (!userId) throw new NotFoundError(`No user: ${username}`)
+        
+        const result = await db.query(
+            `SELECT entry_date
+            FROM entries
+            WHERE user_id = $1;
+            `,
+            [userId]
+            // `SELECT DISTINCT EXTRACT(YEAR FROM entry_date)
+            // FROM entries
+            // WHERE user_id = $1;
+            // `,
+            // [userId]
+        )
+
+        const entries = result.rows
+
+        if (!entries[0]) throw new NotFoundError(`No entries found`)
+
+        return entries
+    }
+
+    /* Update entry */
+
     static async update ( username: string, entryDate: string) {
 
     }
+
+    /* Delete entry */
 
     static async delete ( username: string, date: string) {
         const userCheck = await db.query(

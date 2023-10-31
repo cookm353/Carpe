@@ -62,8 +62,6 @@ router.get("/:username", ensureIsAdminOrCorrectUser, async (req, res, next) => {
  * Auth required: correct user or admin
  */
 
-
-
 router.get("/:username/:date", ensureIsAdminOrCorrectUser, async (req, res, next) => {
     try {
         const { username, date } = req.params
@@ -75,6 +73,18 @@ router.get("/:username/:date", ensureIsAdminOrCorrectUser, async (req, res, next
         
     }
 })
+
+router.get("/:username/years", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+    try {
+        const {username} = req.params
+
+        const years = await Entry.getEntryYears(username)
+        return res.json({years})
+    } catch (err) {
+        return next(err)
+    }
+})
+
 
 router.delete("/:username/:date", ensureIsAdminOrCorrectUser, async (req, res, next) => {
     try {
