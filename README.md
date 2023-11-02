@@ -41,3 +41,12 @@ Unveil your potential with Carpe by your side! As your trusted epilepsy manageme
 - sleep_quality: number
 - comment: string
 - user_id: associated user's id
+
+## Takeaways
+
+- When making a REST API for the backend, don't blindly create methods for the models and corresponding routes.  You'll probably need one method for adding data and two or more for retrieving data, but hold off on creating others until you know what you need.
+- Don't create the entire backend and just rely on a client like Postman or Insomnia to test your routes.  Create basic components for getting input and displaying output.  These basic components can be refined later.
+- It's okay to bespoke routes and methods on the backend to make it easier to implement features on the frontend.
+- Make your takeaways doc/section earlier in the process.  It'll save you from trying to remember the lessons you've learned while working on the project, and if it's long enough you can convert it to a LinkedIn or Medium post.
+- Have a good idea for something to add to your project?  Great!  Add it to your list of stretch goals and get back to trying to get the MVP done.
+- See a new tool or technology you think looks cool?  Great!  Make a note of it for your next project and get back to trying to get the MVP done.
