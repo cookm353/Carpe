@@ -25,6 +25,7 @@ class Entry {
             "may": 4, "jun": 5, "jul": 6, "aug": 7,
             "sep": 8, "oct": 9, "nov": 10, "dec": 11
         }
+        console.log('date string:', dateString)
 
         if (!Number.parseInt(dateString[1])) {
             dateString = `0${dateString}`
@@ -83,32 +84,32 @@ class Entry {
      * @returns Date from database or throws an error
      */
     static async get( username: string, date: string ) {
-        const userResult = await db.query(
-            `SELECT user_id
-            FROM users
-            WHERE username = $1`,
-            [username]
-        )
-        const userId = userResult.rows[0]['user_id']
+        // const userResult = await db.query(
+        //     `SELECT user_id
+        //     FROM users
+        //     WHERE username = $1`,
+        //     [username]
+        // )
+        // const userId = userResult.rows[0]['user_id']
         
-        if (!userId) throw new NotFoundError(`No user: ${username}`)
+        // if (!userId) throw new NotFoundError(`No user: ${username}`)
 
-        const entryDate = Entry.parseDate(date)
+        // const entryDate = Entry.parseDate(date)
         
-        const result = await db.query(
-            `SELECT *
-            FROM entries
-            WHERE user_id = $1
-                AND entry_date = $2
-            `,
-            [userId, entryDate]
-        )
+        // const result = await db.query(
+        //     `SELECT *
+        //     FROM entries
+        //     WHERE user_id = $1
+        //         AND entry_date = $2
+        //     `,
+        //     [userId, entryDate]
+        // )
 
-        const entry: getResult = result.rows[0]
+        // const entry: getResult = result.rows[0]
 
-        if (!entry) throw new NotFoundError(`No entry for ${date}`)
+        // if (!entry) throw new NotFoundError(`No entry for ${date}`)
 
-        return entry
+        // return entry
     }
 
     /** Retrieves all entries a user's made */
@@ -148,7 +149,7 @@ class Entry {
     static async getEntryYears (username: string) {
         const userCheck = await db.query(
             `SELECT user_id
-            FROM users
+            FROM entries
             WHERE username = $1`,
             [username]
         )
@@ -159,19 +160,15 @@ class Entry {
         if (!userId) throw new NotFoundError(`No user: ${username}`)
         
         const result = await db.query(
-            `SELECT entry_date
+            `SELECT DISTINCT EXTRACT(YEAR FROM entry_date)
             FROM entries
             WHERE user_id = $1;
             `,
             [userId]
-            // `SELECT DISTINCT EXTRACT(YEAR FROM entry_date)
-            // FROM entries
-            // WHERE user_id = $1;
-            // `,
-            // [userId]
         )
-
+        
         const entries = result.rows
+        console.log(entries)
 
         if (!entries[0]) throw new NotFoundError(`No entries found`)
 

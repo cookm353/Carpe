@@ -62,10 +62,12 @@ router.get("/:username/:date", ensureIsAdminOrCorrectUser, async (req, res, next
         return next(err);
     }
 });
-router.get("/:username/years", ensureIsAdminOrCorrectUser, async (req, res, next) => {
+router.get("/:username/years", async (req, res, next) => {
     try {
+        console.log('getting years');
         const { username } = req.params;
         const years = await Entry.getEntryYears(username);
+        console.log(years);
         return res.json({ years });
     }
     catch (err) {
